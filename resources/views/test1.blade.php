@@ -14,15 +14,24 @@
             var unitStepSize = 1;
 
             var diff = @json($diff);
+            var type = @json($type);
 
-            if (diff > 7) {
+            if ( type === "Day") {
+                unit = 'day';
+                unitStepSize = 1;
+            }
+
+            if (type === "Week") {
                 unit = 'week';
                 unitStepSize = Math.ceil(diff / 7);
-                labels: @json($weekLabels);
+            }
+            if (type === "Month") {
+                unit = 'month';
+                unitStepSize = Math.ceil(diff / 30);
             }
             
             var salesData = {
-                labels: @json(array_keys($currentYearData->merge($previousYearData)->toArray())),
+                labels: unit === 'week' ? @json($weekLabels) : unit === 'month' ? @json($monthLabels) : @json(array_keys($currentYearData->merge($previousYearData)->toArray())),
                 datasets: [
                     {
                         label: 'Current Year',
@@ -67,7 +76,8 @@
                                 unitStepSize: unitStepSize,
                                 displayFormats: {
                                     day: 'MMM D',
-                                    week: 'W'
+                                    week: 'W',
+                                    month: 'M'
                                 }
                             },
                             title: {

@@ -7,31 +7,22 @@ use DB;
 use App\Models\Source;
 use App\Models\Sub_source;
 use App\Models\Order;
+use App\Models\HostingerProduct;
 use ConsoleTVs\Charts\Facades\Charts;
 class ChartController extends Controller
 {
     public function index(){
 
-
-
-
-
-        //$sources = 'DB::table("source")->get()';
         $sub_sources = '';
-        //$orders = '';
-
         $orders ='';
-
-    $sources = Source::all();
-    $subSources ='';
-
+        $sources = Source::all();
+        $subSources ='';
+    
+    $category = DB::table('hostinger_products')->select('ProductType')->distinct()->where('ProductType', '!=', '')->get();
     $subSources = Sub_source::get(['sub_source.sub_source','ss_name as sub_name']);
 
-
-
-
-
-        return view("chart",compact('sources','sub_sources','orders','subSources'));
+// dd($category);
+        return view("chart",compact('sources','sub_sources','orders','subSources','category'));
     }
 
 

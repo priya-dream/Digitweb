@@ -18,18 +18,27 @@ public function index(Request $request)
     $source = $request->input('source');
     $sub_source = $request->input('sub_source');
 
+    $category = $request->input('category');
+    $type = $request->input('type');
+    $range = $request->input('range');
+
     $s_date = Carbon::parse($startDate);
     $e_date = Carbon::parse($endDate);
 
     $diff = $s_date->diffInDays($e_date);
-    // dd($diff);
-   
 
+    $today_date = Carbon::now()->toDateString(); 
+    $day_30 = Carbon::now()->addDays(-30)->toDateString();
+    $day_15 = Carbon::now()->addDays(-15)->toDateString();
+    $day_7 = Carbon::now()->addDays(-7)->toDateString();
+    // dd($day_15);
+  
     // Get data for the current date range
     $currentYearData = Order::whereBetween('order_date', [$startDate, $endDate])
         ->leftjoin('order_item_info', 'order.order', '=', 'order_item_info.oii_order_id')
         ->leftjoin('sub_source', 'sub_source.sub_source', '=', 'order.order_sub_source')
         ->leftjoin('source', 'source.source', '=', 'sub_source.ss_source')
+        ->leftJoin('hostinger_products', 'hostinger_products.SKU', '=', 'order_item_info.oii_item_sku')
         ->selectRaw("DATE(order.order_date) as date, SUM(order_item_info.oii_item_quantity) as quantity")
         ->groupBy('date')
         ->orderBy('date')
@@ -43,6 +52,7 @@ public function index(Request $request)
         ->leftjoin('order_item_info', 'order.order', '=', 'order_item_info.oii_order_id')
         ->leftjoin('sub_source', 'sub_source.sub_source', '=', 'order.order_sub_source')
         ->leftjoin('source', 'source.source', '=', 'sub_source.ss_source')
+        ->leftJoin('hostinger_products', 'hostinger_products.SKU', '=', 'order_item_info.oii_item_sku')
         ->selectRaw("DATE(order.order_date) as date, SUM(order_item_info.oii_item_quantity) as quantity")
         ->groupBy('date')
         ->orderBy('date')
@@ -56,7 +66,36 @@ public function index(Request $request)
             $currentYearData->where('sub_source.sub_source', $sub_source);
             $previousYearData->where('sub_source.sub_source', $sub_source);
         }
-// dd($previousYearData);
+        if ($category) {
+            $currentYearData->where('hostinger_products.ProductType', $category);
+            $previousYearData->where('hostinger_products.ProductType', $category);
+        }
+        if ($range) {
+            if($range == 'Last 30 days') {
+                $currentYearData = Order::whereBetween('order_date', ['2024-01-01', '2024-01-26'])
+        ->leftjoin('order_item_info', 'order.order', '=', 'order_item_info.oii_order_id')
+        ->leftjoin('sub_source', 'sub_source.sub_source', '=', 'order.order_sub_source')
+        ->leftjoin('source', 'source.source', '=', 'sub_source.ss_source')
+        ->leftJoin('hostinger_products', 'hostinger_products.SKU', '=', 'order_item_info.oii_item_sku')
+        ->selectRaw("DATE(order.order_date) as date, SUM(order_item_info.oii_item_quantity) as quantity")
+        ->groupBy('date')
+        ->orderBy('date')
+        ->pluck('quantity', 'date');
+        
+       
+            // $currentYearData->whereBetween('order_date.', [$today_date, $day_30]);
+            // $previousYearData->whereBetween('order_date', [$today, $day_30]);
+            }
+            if($range == 'Last 15 days') {
+                $currentYearData->whereBetween('order_date.', [$today_date, $day_15]);
+                $previousYearData->whereBetween('order_date', [$today_date, $day_15]);
+            }
+            if($range == 'Last 7 days') {
+                $currentYearData->whereBetween('order_date.', [$today_date, $day_7]);
+                $previousYearData->whereBetween('order_date', [$today_date, $day_7]);
+            }
+        }
+// dd($currentYearData);
 
             function ordinal($number) {
                 $suffix = '';
@@ -81,14 +120,38 @@ public function index(Request $request)
                 return $number . $suffix;
             }
             $weekLabels = [];
-            foreach ($currentYearData->merge($previousYearData) as $date => $value) {
-                // Calculate week number and format it
-                $weekNumber = Carbon::parse($date)->weekOfYear;
-                $formattedWeek = ordinal($weekNumber) . ' week';
+            $uniqueWeeks = [];
+            $monthLabels = [];
+            $uniqueMonths = [];
 
-                $weekLabels[] = $formattedWeek;
-            }
-    return view('test1', compact('startDate', 'endDate', 'currentYearData', 'previousYearData','diff','weekLabels'));
+                while ($s_date->lte($e_date)) {
+                    $weekNumber = $s_date->weekOfYear;
+                    $formattedWeek = ordinal($weekNumber) . ' week';
+                
+                    // Ensure the week label is unique
+                    while (in_array($formattedWeek, $weekLabels)) {
+                        $weekNumber++;
+                        $formattedWeek = ordinal($weekNumber) . ' week';
+                    }
+                
+                    $weekLabels[] = $formattedWeek;
+                    $s_date->addWeek(); // Move to the next week
+                }
+                while ($s_date->lte($e_date)) {
+                    $monthNumber = $s_date->monthOfYear;
+                    $formattedMonth = ordinal($monthNumber) . ' month';
+                
+                    // Ensure the week label is unique
+                    while (in_array($formattedMonth, $monthLabels)) {
+                        $monthNumber++;
+                        $formattedMonth = ordinal($monthNumber) . ' month';
+                    }
+                
+                    $monthLabels[] = $formattedMonth;
+                    $s_date->addMonth(); // Move to the next month
+                }
+                // dd($type);
+    return view('test1', compact('startDate', 'endDate', 'currentYearData', 'previousYearData','diff','weekLabels','monthLabels','type'));
 }
 
         

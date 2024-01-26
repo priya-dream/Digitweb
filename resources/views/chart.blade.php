@@ -381,10 +381,10 @@
                             <div class="row">
                                 <div class="col">
                                         <label for="dateRange" class="form-label" >Date range</label>
-                                        <select class="form-control">
+                                        <select class="form-control" name="range">
                                                 <option selected>Last 30 days</option>
                                                 <option >Last 15 days</option>
-                                                <option >Last 5 days</option>
+                                                <option >Last 7 days</option>
                                         </select>
                                     </div>       
                                     <div class="col">
@@ -397,8 +397,11 @@
                                     </div>
                                     <div class="col">
                                         <label for="dateRange" class="form-label">Group by data</label>
-                                        <select class="form-control">
+                                        <select class="form-control" name="type">
                                                 <option selected>Day</option>
+                                                <option >Week</option>
+                                                <option >Month</option>
+
                                         </select>
                                     </div> 
                                 </div>
@@ -406,13 +409,18 @@
                             <h5>Filters</h5>
                             <div class="row">
                                 <div class="col">
+                                <label for="fullfillment" class="form-label">Store/catelog</label>
                                     <select class="form-control">
                                             <option selected>Store/catelog</option>
                                     </select>
                                 </div>
                                 <div class="col">
-                                    <select class="form-control">
-                                            <option selected>Category</option>
+                                <label for="fullfillment" class="form-label">Category</label>
+                                    <select class="form-control" name="category">
+                                    @foreach($category as $cat)
+                                    <option selected>Select Category</option>
+                                        <option>{{$cat->ProductType}}</option>
+                                    @endforeach
                                     </select>
                                 </div> 
                                 <div class="col">
@@ -433,10 +441,7 @@
                                             @endforeach
                                         </select>
                                 </div>
-                            </div>
-
-                            
-                            
+                            </div></br>
                                 <button type="submit" class="btn btn-primary">Apply</button>
                         </form>
                         
