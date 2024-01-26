@@ -16,16 +16,16 @@
                 <th scope="col">Unitsold</th>
                 <th scope="col">Unitsold Trend</th>
             </tr> 
-            <tr>
-                @foreach($result as $res)
-                <td></td>
-                <td>{{$res->no_of_products}}</td>
-                <td>{{$res->revenue}}</td>
-                <td></td>
-                <td>{{$res->qty}}</td>
-                <td></td>
-                @endforeach
-            </tr>
+            @foreach($result as $res)
+                <tr>
+                    <td>{{$res->category_name}} </td>
+                    <td>{{$res->no_of_products}}</td>
+                    <td>{{$res->revenue}}</td>
+                    <td>{{$res->revenue_trend_percentage}} </td>
+                    <td>{{$res->qty}}</td>
+                    <td>{{$res->qty_trend_percentage}} </td>
+                </tr>
+            @endforeach
         
         
             

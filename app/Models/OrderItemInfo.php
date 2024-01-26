@@ -8,13 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class OrderItemInfo extends Model
 {
     protected $table = "order_item_info";
-    
-    public function order() {
-        return $this->belongsTo(Order::class, 'oii_order_id', 'order'); 
+    protected $primaryKey = 'order_item_info ';
+
+    // Define relationship with Order model
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'oii_order_id', 'order');
     }
 
-    public function hostingerProduct() {
-        return $this->belongsTo(HostingerProduct::class, 'oii_item_sku', 'SKU'); 
+    // Define relationship with HostingerProduct model
+    public function hostingerProduct()
+    {
+        return $this->belongsTo(HostingerProduct::class, 'oii_item_sku', 'SKU');
     }
 
 }

@@ -8,11 +8,30 @@ use Illuminate\Database\Eloquent\Model;
 class HostingerProduct extends Model
 {
     use HasFactory;
+
     protected $table = "hostinger_products";
-    protected $fillable = ['ProductType'];
+    protected $primaryKey = 'SKU';
 
-    public function orderItemInfo() {
-        return $this->hasOne(OrderItemInfo::class, 'oii_item_sku', 'SKU');
+    // Define relationship with OrderItemInfo model
+    public function orderItemInfo()
+    {
+        return $this->hasMany(OrderItemInfo::class, 'oii_item_sku', 'SKU');
     }
+    
+    // protected $connection = 'mysql';
+    // protected $table = 'hostinger_products';
+    // protected $primaryKey = 'ProductID';
+    // public $timestamps = false;
+    // // public $connection = 'digit_web_hostinger';
 
+	// protected $fillable = [
+	// 	'SKU',
+    //     'mappingsku',
+    //     'Quantity',
+    //     'germanInventory',
+    //     'duis_de_invent',
+    //     'netherland',
+    //     'france',
+    //     'canada'
+	// ];
 }
