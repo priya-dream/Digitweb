@@ -376,21 +376,24 @@
                     <h2>Active Date Range: 23 December 2023 - 21 January 2024</h2>
                     <h5>Date range and Grouping</h5>
                     <div class="row">
-                        <form class="form-control">
+                        <form action="{{url('/linechart')}}" method = "get" class="form-control">
+                            @csrf
                             <div class="row">
                                 <div class="col">
                                         <label for="dateRange" class="form-label" >Date range</label>
                                         <select class="form-control">
                                                 <option selected>Last 30 days</option>
+                                                <option >Last 15 days</option>
+                                                <option >Last 5 days</option>
                                         </select>
                                     </div>       
                                     <div class="col">
                                         <label for="dateFrom" class="form-label">From</label>
-                                        <input type="date" class="form-control" >
+                                        <input type="date" name="from" class="form-control" >
                                     </div>
                                     <div class="col">
                                         <label for="dateTo" class="form-label">To</label>
-                                        <input type="date" class="form-control" >
+                                        <input type="date" name="to" class="form-control" >
                                     </div>
                                     <div class="col">
                                         <label for="dateRange" class="form-label">Group by data</label>
@@ -414,19 +417,25 @@
                                 </div> 
                                 <div class="col">
                                     <label for="fullfillment" class="form-label">Sources</label>
-                                    <select class="form-control">
-                                        @foreach($sources as $source)
-                                            <option selected>{{$source->source_name}}</option>
-                                        @endforeach
-                                    </select>
+                                    <select id="sourceSelect" name="source" class="form-control ">
+                                            <option value="" selected>Select Source</option>
+                                            @foreach($sources as $source)
+                                                <option value="{{ $source->source }}" {{ isset($sourceName) && $sourceName === $source->source ? 'selected' : '' }}>{{ $source->source_name }}</option>
+                                            @endforeach
+                                        </select>
                                 </div> 
                                 <div class="col">
                                     <label for="custype" class="form-label">Other Sources</label>
-                                    <select class="form-control">
-                                            <option selected>All</option>
-                                    </select>
+                                    <select id="subSourceSelect" name="sub_source" class="form-control ">
+                                            <option value="" selected>Select Sub-Source</option>
+                                            @foreach($subSources as $subSource)
+                                                <option value="{{ $subSource->sub_source }}" {{ isset($subSourceName) && $subSourceName === $subSource->sub_source ? 'selected' : '' }}>{{ $subSource->sub_name }}</option>
+                                            @endforeach
+                                        </select>
                                 </div>
                             </div>
+
+                            
                             
                                 <button type="submit" class="btn btn-primary">Apply</button>
                         </form>
@@ -440,6 +449,8 @@
 
                     <div class="row">
 
+
+                    <canvas id="salesLineChart"></canvas>
                         <!-- Area Chart -->
                         <div class="col-xl-8 col-lg-7">
                             <div class="card shadow mb-4">
@@ -515,7 +526,89 @@
                                     </tbody>
                                     </table>
                         </div>
+    
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+                        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+{{-- source subSource --}}
+ 
+ <script>
+    $(document).ready(function () {
+        
+        var sourceName = '{{ $sourceName ?? '' }}';
+        $('#sourceSelect').val(sourceName);
+
+        
+        var subSourceName = '{{ $subSourceName ?? '' }}';
+        $('#subSourceSelect').val(subSourceName);
+
+   
+        
+        function updateSubSources(sourceId, selectedSubSource) {
+            $.ajax({
+                url: '/get-sub-sources/' + sourceId,
+                type: 'GET',
+                success: function (data) {
+                    $('#subSourceSelect').empty();
+                    $('#subSourceSelect').append('<option value="" selected>Select Sub-Source</option>');
+
+                
+                    $.each(data, function (key, subSource) {
+                        $('#subSourceSelect').append('<option value="' + subSource.sub_name + '">' + subSource.name + '</option>');
+                    });
+
+                
+                    $('#subSourceSelect').val(selectedSubSource || '');
+                }
+            });
+        }
+
+       
+        updateSubSources($('#sourceSelect').val(), subSourceName);
+       
+        
+        $('#sourceSelect').on('change', function () {
            
+            var selectedSource = $(this).val();
+
+           
+            updateSubSources(selectedSource, '');
+
+          
+            $('#sourceSelect').val(selectedSource);
+        });
+    });
+</script>
+
+
+{{-- source subSource end--}}
+
+
+<!-- js for chart -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const orders = {!! json_encode($orders) !!};
+
+    const dates = order.map(order => order.order_date);
+    const amounts = orders.map(sale => order.order_total);
+
+    const ctx = document.getElementById('salesLineChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: ' Chart',
+                borderColor: 'rgb(75, 192, 192)',
+                data: amounts,
+                fill: false,
+            }],
+        },
+    });
+});
+</script>
+<!-- js for chart -->
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>

@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChartController;
+use App\Http\Controllers\LineChartController;
+use App\Http\Controllers\ChartJSController;
+use App\Http\Controllers\MainDataController;
+use App\Http\Controllers\ReportController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +24,16 @@ Route::get('/', function () {
 });
 
 Route::get('/chart',[ChartController::class,'index']);
+Route::get('/report',[ReportController::class,'index']);
 
-Route::get('/test',[ChartController::class,'test']);
+//Route::get('/test',[ChartController::class,'test']);
+Route::get('/test1',[ChartController::class,'test1']);
+
+Route::get('linechart', [ChartJSController::class, 'index']);
+
+//Route::get('/test', [LineChartController::class, 'lineChart']);
+
+Route::get('/create-form', [MainDataController::class,'create']);
+Route::get('/get-districts/{sourceId}', [MainDataController::class,'getDistricts']);
+
+Route::get('/get-sub-sources/{source}', [App\Http\Controllers\ChartController::class, 'getSubSources'])->name('get-sub-sources');

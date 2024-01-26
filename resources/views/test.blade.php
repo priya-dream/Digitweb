@@ -1,128 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<html>
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cdbootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cdbootstrap/css/cdb.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/cdbootstrap/js/cdb.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cdbootstrap/js/bootstrap.min.js"></script>
-    <script src="https://kit.fontawesome.com/9d1d9a82d2.js" crossorigin="anonymous"></script>
+        function drawChart() {
+            var x_labels = <?php echo json_encode($x_labels); ?>;
+            var x_values = <?php echo json_encode($x_values); ?>;
 
-    <title>How to create bootstrap charts using bootstrap 5 and Contrast</title>
+            console.log('x_labels:', x_labels);
+            console.log('x_values:', x_values);
 
-    <style>
-        .chart-container {
-            width: 50%;
-            height: 50%;
-            margin: auto;
+            // Uncomment the next line to check the expected structure of your data
+            // debugger;
+
+            var data = google.visualization.arrayToDataTable(getChartData(x_labels, x_values));
+
+            var options = {
+                title: 'Order Performance',
+                curveType: 'function',
+                legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+            chart.draw(data, options);
         }
-    </style>
-  </head>
 
-  <body>
-    <div class="card chart-container">
-    <canvas id="chart"></canvas>
-</div>
-  </body>
+        function getChartData(labels, values) {
+            var chartData = [['Year', ...labels]];
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
-  <!DOCTYPE html>
-<html lang="en">
+            for (var label in values) {
+                if (values.hasOwnProperty(label)) {
+                    var row = [label, ...values[label]];
+                    chartData.push(row);
+                }
+            }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-  <link rel="stylesheet" href="../contrast-bootstrap-pro/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="../contrast-bootstrap-pro/css/cdb.css" />
-  <script src="../contrast-bootstrap-pro/js/cdb.js"></script>
-  <script src="../contrast-bootstrap-pro/js/bootstrap.min.js"></script>
-  <script src="https://kit.fontawesome.com/9d1d9a82d2.js" crossorigin="anonymous"></script>
-
-  <title>How to create bootstrap charts using bootstrap 5</title>
+            return chartData;
+        }
+    </script>
 </head>
-<style>
-  .chart-container {
-    width: 50%;
-    height: 50%;
-    margin: auto;
-  }
-</style>
-
 <body>
-  <div class="card chart-container">
-    <canvas id="chart"></canvas>
-  </div>
-
+    <div id="curve_chart" style="width: 900px; height: 500px"></div>
 </body>
+</html>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js">
-</script>
-<!DOCTYPE html>
-<html lang="en">
+<canvas id="salesChart" width="800" height="400"></canvas>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-  <link rel="stylesheet" href="../contrast-bootstrap-pro/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="../contrast-bootstrap-pro/css/cdb.css" />
-  <script src="../contrast-bootstrap-pro/js/cdb.js"></script>
-  <script src="../contrast-bootstrap-pro/js/bootstrap.min.js"></script>
-  <script src="https://kit.fontawesome.com/9d1d9a82d2.js" crossorigin="anonymous"></script>
-
-  <title>How to create bootstrap charts using bootstrap 5</title>
-</head>
-<style>
-  .chart-container {
-    width: 50%;
-    height: 50%;
-    margin: auto;
-  }
-</style>
-
-<body>
-  <div class="card chart-container">
-    <canvas id="chart"></canvas>
-  </div>
-
-</body>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
-<script>
-      const ctx = document.getElementById("chart").getContext('2d');
-      const myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ["sunday", "monday", "tuesday",
-          "wednesday", "thursday", "friday", "saturday"],
-          datasets: [{
-            label: 'Last week',
-            backgroundColor: 'rgba(161, 198, 247, 1)',
-            borderColor: 'rgb(47, 128, 237)',
-            data: [3000, 4000, 2000, 5000, 8000, 9000, 2000],
-          }]
-        },
-        options: {
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true,
-              }
+    <script>
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        var salesData = {
+            labels: @json($label_1_month),
+            datasets: [{
+                label: 'Sales in the last month',
+                data: @json($data_1_month),
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                fill: false
             }]
-          }
-        },
-      });
-</script>
+        };
 
-</html>
-
-</html>
-</html>
+        // var salesChart = new Chart(ctx, {
+        //     type: 'line',
+        //     data: salesData,
+        //     options: {
+        //         responsive: true,
+        //         scales: {
+        //             x: {
+        //                 type: 'time',
+        //                 time: {
+        //                     unit: 'day',
+        //                     displayFormats: {
+        //                         day: 'MMM D'
+        //                     }
+        //                 }
+        //             },
+        //             y: {
+        //                 beginAtZero: true
+        //             }
+        //             </script>
