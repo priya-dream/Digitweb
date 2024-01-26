@@ -485,48 +485,7 @@
 
                                 
                             </div>
-                            <h5 style="margin-left:30px" >Categories performance</h5>
-
-                                <table class="table table-striped" style="margin-left:30px">
-                                    <thead>
-                                        <tr>
-                                        <th scope="col">Category Name</th>
-                                        <th scope="col">No of Products</th>
-                                        <th scope="col">Revenue</th>
-                                        <th scope="col">Revenue Trend</th>
-                                        <th scope="col">Unitsold</th>
-                                        <th scope="col">Unitsold Trend</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                        <td>aaaa</td>
-                                        <td>234</td>
-                                        <td>234.54</td>
-                                        <td>24%</td>
-                                        <td>56</td>
-                                        <td>56%</td>
-                                        </tr>
-                                        <tr>
-                                        <td>bbb</td>
-                                        <td>546</td>
-                                        <td>4567.54</td>
-                                        <td>34%</td>
-                                        <td>67</td>
-                                        <td>45%</td>
-                                        </tr>
-                                        <tr>
-                                        <td>cccc</td>
-                                        <td>67</td>
-                                        <td>456.54</td>
-                                        <td>67%</td>
-                                        <td>45</td>
-                                        <td>34%</td>
-                                        </tr>
-                                    </tbody>
-                                    </table>
-                        </div>
-    
+                           
                         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
                         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

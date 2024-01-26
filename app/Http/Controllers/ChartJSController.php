@@ -17,8 +17,12 @@ public function index(Request $request)
 
     $source = $request->input('source');
     $sub_source = $request->input('sub_source');
-    // dd($sub_source);
 
+    $s_date = Carbon::parse($startDate);
+    $e_date = Carbon::parse($endDate);
+
+    $diff = $s_date->diffInDays($e_date);
+    // dd($diff);
    
 
     // Get data for the current date range
@@ -53,8 +57,38 @@ public function index(Request $request)
             $previousYearData->where('sub_source.sub_source', $sub_source);
         }
 // dd($previousYearData);
-        
-    return view('test1', compact('startDate', 'endDate', 'currentYearData', 'previousYearData'));
+
+            function ordinal($number) {
+                $suffix = '';
+                if ($number % 100 >= 11 && $number % 100 <= 13) {
+                    $suffix = 'th';
+                } else {
+                    switch ($number % 10) {
+                        case 1:
+                            $suffix = 'st';
+                            break;
+                        case 2:
+                            $suffix = 'nd';
+                            break;
+                        case 3:
+                            $suffix = 'rd';
+                            break;
+                        default:
+                            $suffix = 'th';
+                            break;
+                    }
+                }
+                return $number . $suffix;
+            }
+            $weekLabels = [];
+            foreach ($currentYearData->merge($previousYearData) as $date => $value) {
+                // Calculate week number and format it
+                $weekNumber = Carbon::parse($date)->weekOfYear;
+                $formattedWeek = ordinal($weekNumber) . ' week';
+
+                $weekLabels[] = $formattedWeek;
+            }
+    return view('test1', compact('startDate', 'endDate', 'currentYearData', 'previousYearData','diff','weekLabels'));
 }
 
         

@@ -9,6 +9,17 @@
         console.log('Script Start');
         document.addEventListener('DOMContentLoaded', function () {
             var ctx = document.getElementById('salesChart').getContext('2d');
+
+            var unit = 'day';
+            var unitStepSize = 1;
+
+            var diff = @json($diff);
+
+            if (diff > 7) {
+                unit = 'week';
+                unitStepSize = Math.ceil(diff / 7);
+                labels: @json($weekLabels);
+            }
             
             var salesData = {
                 labels: @json(array_keys($currentYearData->merge($previousYearData)->toArray())),
@@ -30,6 +41,8 @@
                 ]
             };
 
+           
+
             var salesChart = new Chart(ctx, {
                 type: 'line',
                 data: salesData,
@@ -50,10 +63,11 @@
                             time: {
                                 parser: 'YYYY-MM-DD',
                                 tooltipFormat: 'MMM D',
-                                unit: 'day',
-                                unitStepSize: 1,
+                                unit: unit,
+                                unitStepSize: unitStepSize,
                                 displayFormats: {
-                                    day: 'MMM D'
+                                    day: 'MMM D',
+                                    week: 'W'
                                 }
                             },
                             title: {
