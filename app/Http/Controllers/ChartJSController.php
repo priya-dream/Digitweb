@@ -72,19 +72,8 @@ public function index(Request $request)
         }
         if ($range) {
             if($range == 'Last 30 days') {
-                $currentYearData = Order::whereBetween('order_date', ['2024-01-01', '2024-01-26'])
-        ->leftjoin('order_item_info', 'order.order', '=', 'order_item_info.oii_order_id')
-        ->leftjoin('sub_source', 'sub_source.sub_source', '=', 'order.order_sub_source')
-        ->leftjoin('source', 'source.source', '=', 'sub_source.ss_source')
-        ->leftJoin('hostinger_products', 'hostinger_products.SKU', '=', 'order_item_info.oii_item_sku')
-        ->selectRaw("DATE(order.order_date) as date, SUM(order_item_info.oii_item_quantity) as quantity")
-        ->groupBy('date')
-        ->orderBy('date')
-        ->pluck('quantity', 'date');
-        
-       
-            // $currentYearData->whereBetween('order_date.', [$today_date, $day_30]);
-            // $previousYearData->whereBetween('order_date', [$today, $day_30]);
+            $currentYearData->whereBetween('order_date.', [$today_date, $day_30]);
+            $previousYearData->whereBetween('order_date', [$today_date, $day_30]);
             }
             if($range == 'Last 15 days') {
                 $currentYearData->whereBetween('order_date.', [$today_date, $day_15]);
