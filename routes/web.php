@@ -24,6 +24,7 @@ Route::get('/', function () {
 });
 
 Route::get('/chart',[ChartController::class,'index']);
+Route::post('/formResult',[ChartController::class,'formResult'])->name('formResult');
 Route::get('/report',[ReportController::class,'index']);
 
 //Route::get('/test',[ChartController::class,'test']);

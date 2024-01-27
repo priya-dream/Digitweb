@@ -12,7 +12,7 @@ use ConsoleTVs\Charts\Facades\Charts;
 use Carbon\Carbon;
 class ChartController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
 
         $sub_sources = '';
         $orders ='';
@@ -45,8 +45,26 @@ class ChartController extends Controller
         return view("test1",compact("sources"));
     }
 
-    public function chart(Request $request){
-        $startDate = $request->input('from');
+    public function formResult(Request $request){
+        // have 1 blade file .in blade file there is a form, when I click submit button need to display two blade file in the same page in laravel
+        $result = DB::table('order_item_info')
+        ->select(DB::raw('SUM(order_item_info.oii_item_quantity) as qty,
+                        SUM(order_item_info.oii_order_id) as no_of_products,
+                        SUM(order_item_info.oii_item_price) as revenue,
+                        hostinger_products.ProductType as category_name,
+                        LAG(SUM(order_item_info.oii_item_price)) OVER (ORDER BY order.order_date) as prev_revenue,
+                        LAG(SUM(order_item_info.oii_item_quantity)) OVER (ORDER BY order.order_date) as prev_qty,
+                        (SUM(order_item_info.oii_item_price) - LAG(SUM(order_item_info.oii_item_price)) OVER (ORDER BY order.order_date)) / LAG(SUM(order_item_info.oii_item_price)) OVER (ORDER BY order.order_date) * 100 as revenue_trend_percentage,
+                        (SUM(order_item_info.oii_item_quantity) - LAG(SUM(order_item_info.oii_item_quantity)) OVER (ORDER BY order.order_date)) / LAG(SUM(order_item_info.oii_item_quantity)) OVER (ORDER BY order.order_date) * 100 as qty_trend_percentage'))
+        ->leftJoin('hostinger_products', 'hostinger_products.SKU', '=', 'order_item_info.oii_item_sku')
+        ->leftJoin('order', 'order.order', '=', 'order_item_info.oii_order_id')
+        ->where(DB::raw('DATE(order.order_date)'), '=', '2023-02-07')
+        ->groupBy('category_name')
+        ->get();
+
+        //................................................................
+
+    $startDate = $request->input('from');
     $endDate = $request->input('to');
 
     $source = $request->input('source');
@@ -173,7 +191,23 @@ class ChartController extends Controller
                     $monthLabels[] = $formattedMonth;
                     $s_date->addMonth(); // Move to the next month
                 }
-                // dd($type);
-    return view('chart', compact('startDate', 'endDate', 'currentYearData', 'previousYearData','diff','weekLabels','monthLabels','type'));
+        
+        $data = [
+            'result' => $result, 
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'currentYearData' => $currentYearData,
+            'previousYearData' => $previousYearData,
+            'weekLabels' => $weekLabels,
+            'monthLabels' => $monthLabels,
+            'type' => $type,
+            'diff' => $diff,
+        ];
+
+        // Render the views
+        $view = view('report', $data)->render();
+        $view1 = view('test1', $data)->render();
+
+        return response()->json(['view' => $view,'view1' => $view1]);
     }
 }

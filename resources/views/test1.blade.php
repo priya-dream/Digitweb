@@ -98,6 +98,9 @@
         });
         console.log('Current Year Data:', @json($currentYearData->values()));
     console.log('Previous Year Data:', @json($previousYearData->values()));
+    console.log('Labels:', @json(array_keys($currentYearData->merge($previousYearData)->toArray())));
+console.log('Current Year Data:', @json($currentYearData->values()));
+console.log('Previous Year Data:', @json($previousYearData->values()));
 
         console.log('Script End');
     </script>

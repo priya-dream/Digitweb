@@ -19,6 +19,7 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
@@ -376,7 +377,7 @@
                     <h2>Active Date Range: 23 December 2023 - 21 January 2024</h2>
                     <h5>Date range and Grouping</h5>
                     <div class="row">
-                        <form action="{{url('/linechart')}}" method = "get" class="form-control">
+                        <form id="myForm" method = "post" class="form-control">
                             @csrf
                             <div class="row">
                                 <div class="col">
@@ -442,17 +443,53 @@
                                         </select>
                                 </div>
                             </div></br>
-                                <button type="submit" class="btn btn-primary">Apply</button>
+                            <button type="button" onclick="submitForm()" class="btn btn-primary">Apply</button>
                         </form>
                         
                     </div></br></br>
 
+                    <div id="result"></div>
+                    <div id="result1"></div>
+
+
+                    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                    <script>
+                        function submitForm() {
+                            // Make the first AJAX request
+                            $.ajax({
+                                url: '{{ route("formResult") }}',
+                                type: 'POST',
+                                data: $('#myForm').serialize(),
+                                success: function(response) {
+                                    $('#result').html(response.view);
+                                    $('#result1').html(response.view1);
+                                },
+                                error: function(xhr) {
+                                    console.log(xhr.responseText);
+                                }
+                            });
+                            $.ajax({
+                                url: '{{ route("get-sub-sources", ["source" => $source->source]) }}',
+                                type: 'GET',
+                                data: $('#myForm').serialize(),
+                                success: function(response) {
+                                    $('#result1').html(response.view1);
+                                },
+                                error: function(xhr) {
+                                    console.log(xhr.responseText);
+                                }
+                            });
+                        }
+                    </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
                     <!-- Content Row -->
 
-                    <div style="margin-left:20px"><h3>Total Revenue</h3></div>
-                    <div style="margin-top:10px;margin-left:20px"><h1>9,925.35</h1></div>
+                    <!-- <div style="margin-left:20px"><h3>Total Revenue</h3></div>
+                    <div style="margin-top:10px;margin-left:20px"><h1>9,925.35</h1></div> -->
 
-                    <div class="row">
+                    <!-- <div class="row"> -->
 
 
                     <canvas id="salesLineChart"></canvas>
@@ -460,7 +497,7 @@
                         <div class="col-xl-8 col-lg-7">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
-                                <div
+                                <!-- <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
                                     <div class="dropdown no-arrow">
@@ -476,17 +513,17 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Something else here</a>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
 
                                
 
                                 <!-- Card Body -->
-                                <div class="card-body">
+                                <!-- <div class="card-body">
                                     <div class="chart-area">
                                         <canvas id="myAreaChart"></canvas>
                                     </div>
-                                </div> </br></br>
+                                </div> </br></br> -->
 
                                 
                             </div>
@@ -555,7 +592,7 @@
 
 
 <!-- js for chart -->
-<script>
+<!-- <script>
 document.addEventListener('DOMContentLoaded', function () {
     const orders = {!! json_encode($orders) !!};
 
@@ -576,7 +613,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
     });
 });
-</script>
+</script> -->
 <!-- js for chart -->
 
     <!-- Bootstrap core JavaScript-->
