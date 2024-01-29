@@ -20,6 +20,8 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
 
 </head>
 
@@ -383,7 +385,8 @@
                                 <div class="col">
                                         <label for="dateRange" class="form-label" >Date range</label>
                                         <select class="form-control" name="range">
-                                                <option selected>Last 30 days</option>
+                                                <option selected>Select range</option>
+                                                <option>Last 30 days</option>
                                                 <option >Last 15 days</option>
                                                 <option >Last 7 days</option>
                                         </select>
@@ -417,9 +420,9 @@
                                 </div>
                                 <div class="col">
                                 <label for="fullfillment" class="form-label">Category</label>
-                                    <select class="form-control" name="category">
-                                    @foreach($category as $cat)
+                                    <select class="form-control" name="category">     
                                     <option selected>Select Category</option>
+                                    @foreach($category as $cat)
                                         <option>{{$cat->ProductType}}</option>
                                     @endforeach
                                     </select>
@@ -447,33 +450,32 @@
                         </form>
                         
                     </div></br></br>
-
-                    <div id="result"></div>
-                    <div id="result1"></div>
-
+                    
+                    <div id="result1" style="margin-left:20px;"></div></br></br>
+                    <div id="result" style="margin-left:20px"></div>
 
                     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                    
                     <script>
+                         $.noConflict();
                         function submitForm() {
-                            // Make the first AJAX request
                             $.ajax({
                                 url: '{{ route("formResult") }}',
                                 type: 'POST',
                                 data: $('#myForm').serialize(),
                                 success: function(response) {
+                                    
                                     $('#result').html(response.view);
                                     $('#result1').html(response.view1);
-                                },
-                                error: function(xhr) {
-                                    console.log(xhr.responseText);
-                                }
-                            });
-                            $.ajax({
-                                url: '{{ route("get-sub-sources", ["source" => $source->source]) }}',
-                                type: 'GET',
-                                data: $('#myForm').serialize(),
-                                success: function(response) {
-                                    $('#result1').html(response.view1);
+
+                                    if (!chartInitialized) {
+                                        
+                                        initializeChart();
+                                    } else {
+                                        console.log('AJAX success');
+                                        updateChart(response.newChartData);
+                                    }
+                                    
                                 },
                                 error: function(xhr) {
                                     console.log(xhr.responseText);
@@ -481,8 +483,6 @@
                             });
                         }
                     </script>
-
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
                     <!-- Content Row -->
 
@@ -492,10 +492,10 @@
                     <!-- <div class="row"> -->
 
 
-                    <canvas id="salesLineChart"></canvas>
+                    <!-- <canvas id="salesLineChart"></canvas> -->
                         <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
+                        <!-- <div class="col-xl-8 col-lg-7">
+                            <div class="card shadow mb-4"> -->
                                 <!-- Card Header - Dropdown -->
                                 <!-- <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -514,7 +514,7 @@
                                             <a class="dropdown-item" href="#">Something else here</a>
                                         </div>
                                     </div> -->
-                                </div>
+                                <!-- </div> -->
 
                                
 
@@ -526,20 +526,20 @@
                                 </div> </br></br> -->
 
                                 
-                            </div>
+                            <!-- </div>
 
-                    <div>
+                    <div> -->
                         <!-- @yield('content') -->
                         
-                    </div>
+                    <!-- </div> -->
                            
-                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+                        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-                        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
 
 {{-- source subSource --}}
  
- <script>
+ <!-- <script>
     $(document).ready(function () {
         
         var sourceName = '{{ $sourceName ?? '' }}';
@@ -586,7 +586,7 @@
         });
     });
 </script>
-
+ -->
 
 {{-- source subSource end--}}
 

@@ -4,11 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Line Chart</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <h2>Chart</h2>
+                <canvas id="salesChart" width="800" height="400"></canvas>
+            
+        
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
     <script>
-        console.log('Script Start');
-        document.addEventListener('DOMContentLoaded', function () {
+        // console.log('Script Start');
+        var chartInitialized = false;
+        var salesChart;
+
+        function initializeChart() {
             var ctx = document.getElementById('salesChart').getContext('2d');
+            console.log('Canvas Element:', ctx);
+
+            var ctx = document.getElementById('salesChart').getContext('2d');
+            console.log('Canvas Element:', ctx);
 
             var unit = 'day';
             var unitStepSize = 1;
@@ -37,14 +50,14 @@
                         label: 'Current Year',
                         data: @json($currentYearData->values()),
                         borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 2,
+                        borderWidth: 3,
                         fill: false
                     },
                     {
                         label: 'Previous Year',
                         data: @json($previousYearData->values()),
                         borderColor: 'rgba(192, 75, 75, 1)',
-                        borderWidth: 2,
+                        borderWidth: 3,
                         fill: false
                     }
                 ]
@@ -52,7 +65,7 @@
 
            
 
-            var salesChart = new Chart(ctx, {
+             salesChart = new Chart(ctx, {
                 type: 'line',
                 data: salesData,
                 options: {
@@ -95,19 +108,31 @@
                     }
                 }
             });
+
+            chartInitialized = true;
+        }
+
+        function updateChart(newData) {
+            // Update the chart data
+            salesChart.data = newData;
+
+            // Update the chart
+            salesChart.update();
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeChart();
+            
+            
         });
-        console.log('Current Year Data:', @json($currentYearData->values()));
-    console.log('Previous Year Data:', @json($previousYearData->values()));
-    console.log('Labels:', @json(array_keys($currentYearData->merge($previousYearData)->toArray())));
-console.log('Current Year Data:', @json($currentYearData->values()));
-console.log('Previous Year Data:', @json($previousYearData->values()));
+//         console.log('Current Year Data:', @json($currentYearData->values()));
+//     console.log('Previous Year Data:', @json($previousYearData->values()));
+//     console.log('Labels:', @json(array_keys($currentYearData->merge($previousYearData)->toArray())));
+// console.log('Current Year Data:', @json($currentYearData->values()));
+// console.log('Previous Year Data:', @json($previousYearData->values()));
 
-        console.log('Script End');
+//         console.log('Script End');
     </script>
-</head>
-<body>
 
-<canvas id="salesChart" width="800" height="400"></canvas>
 
 </body>
 </html>
