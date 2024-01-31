@@ -50,14 +50,14 @@
                         label: 'Current Year',
                         data: @json($currentYearData->values()),
                         borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 3,
+                        borderWidth: 4,
                         fill: false
                     },
                     {
                         label: 'Previous Year',
                         data: @json($previousYearData->values()),
-                        borderColor: 'rgba(192, 75, 75, 1)',
-                        borderWidth: 3,
+                        borderColor: 'rgba(153, 139, 230, 1)',
+                        borderWidth: 4,
                         fill: false
                     }
                 ]
@@ -65,7 +65,7 @@
 
            
 
-             salesChart = new Chart(ctx, {
+              salesChart = new Chart(ctx, {
                 type: 'line',
                 data: salesData,
                 options: {
@@ -132,7 +132,31 @@
 
 //         console.log('Script End');
     </script>
-
-
+</br></br>
+<h2>Categories Performance</h2></br>
+        <table class="table table-striped" style="margin-left:30px">
+        
+            <tr>
+                <th scope="col">Category Name</th>
+                <th scope="col">No of Products</th>
+                <th scope="col">Revenue</th>
+                <th scope="col">Revenue Trend</th>
+                <th scope="col">Unitsold</th>
+                <th scope="col">Unitsold Trend</th>
+            </tr> 
+            @foreach($result as $res)
+                <tr>
+                    <td>{{$res->category_name}} </td>
+                    <td>{{$res->no_of_products}}</td>
+                    <td>{{$res->revenue}}</td>
+                    <td>{{$res->revenue_trend_percentage}} </td>
+                    <td>{{$res->qty}}</td>
+                    <td>{{$res->qty_trend_percentage}} </td>
+                </tr>
+            @endforeach
+        
+        
+            
+        </table></br>
 </body>
 </html>

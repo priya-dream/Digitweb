@@ -8,6 +8,7 @@ use App\Models\Source;
 use App\Models\Sub_source;
 use App\Models\Order;
 use App\Models\HostingerProduct;
+use App\Models\OrderItemInfo;
 use ConsoleTVs\Charts\Facades\Charts;
 use Carbon\Carbon;
 class ChartController extends Controller
@@ -47,6 +48,15 @@ class ChartController extends Controller
     }
 
     public function formResult(Request $request){
+
+        $sub_sources = '';
+        $orders ='';
+        $sources = Source::all();
+        $subSources ='';
+    
+    $category1 = DB::table('hostinger_products')->select('ProductType')->distinct()->where('ProductType', '!=', '')->get();
+    $subSources = Sub_source::get(['sub_source.sub_source','ss_name as sub_name']);
+
         // have 1 blade file .in blade file there is a form, when I click submit button need to display two blade file in the same page in laravel
         $result = DB::table('order_item_info')
             ->select(DB::raw('SUM(order_item_info.oii_item_quantity) as qty,
@@ -68,8 +78,8 @@ class ChartController extends Controller
     $startDate = $request->input('from');
     $endDate = $request->input('to');
 
-    $source = $request->input('source');
-    $sub_source = $request->input('sub_source');
+    $source = DB::table('source')->select('source_name')->where('source',$request->input('source'))->first();
+    $sub_source = DB::table('sub_source')->select('ss_name')->where('sub_source',$request->input('sub_source'))->first();
 
     $category = $request->input('category');
     $type = $request->input('type');
@@ -100,6 +110,7 @@ class ChartController extends Controller
     // Get data for the previous year's date range
     $previousYearStartDate = Carbon::parse($startDate)->subYear()->format('Y-m-d');
     $previousYearEndDate = Carbon::parse($endDate)->subYear()->format('Y-m-d');
+    // dd($today_date);
 
     $previousYearData = Order::whereBetween('order_date', [$previousYearStartDate, $previousYearEndDate])
         ->leftjoin('order_item_info', 'order.order', '=', 'order_item_info.oii_order_id')
@@ -128,13 +139,17 @@ class ChartController extends Controller
             $currentYearData->whereBetween('order_date.', [$today_date, $day_30]);
             $previousYearData->whereBetween('order_date', [$today_date, $day_30]);
             }
-            if($range == 'Last 15 days') {
-                $currentYearData->whereBetween('order_date.', [$today_date, $day_15]);
+            elseif($range == 'Last 15 days') {
+                $currentYearData->whereBetween('order_date', [$today_date, $day_15]);
                 $previousYearData->whereBetween('order_date', [$today_date, $day_15]);
             }
-            if($range == 'Last 7 days') {
+            elseif($range == 'Last 7 days') {
                 $currentYearData->whereBetween('order_date.', [$today_date, $day_7]);
                 $previousYearData->whereBetween('order_date', [$today_date, $day_7]);
+            }
+            else{
+                $currentYearData->whereBetween('order_date', [$previousYearStartDate, $previousYearEndDate]);
+                $previousYearData->whereBetween('order_date', [$previousYearStartDate, $previousYearEndDate]);
             }
         }
 // dd($currentYearData);
@@ -193,22 +208,24 @@ class ChartController extends Controller
                     $s_date->addMonth(); // Move to the next month
                 }
         
-        $data = [
-            'result' => $result, 
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'currentYearData' => $currentYearData,
-            'previousYearData' => $previousYearData,
-            'weekLabels' => $weekLabels,
-            'monthLabels' => $monthLabels,
-            'type' => $type,
-            'diff' => $diff,
-        ];
+        // $data = [
+        //     'result' => $result, 
+        //     'startDate' => $startDate,
+        //     'endDate' => $endDate,
+        //     'currentYearData' => $currentYearData,
+        //     'previousYearData' => $previousYearData,
+        //     'weekLabels' => $weekLabels,
+        //     'monthLabels' => $monthLabels,
+        //     'type' => $type,
+        //     'diff' => $diff,
+        // ];
 
         // Render the views
-        $view = view('report', $data)->render();
-        $view1 = view('test1', $data)->render();
+        // return response()->json(['view' => $view]);
+        // $view = view('test1', compact('result','startDate','endDate','currentYearData','previousYearData','previousYearData','weekLabels','monthLabels','type','diff'))->render();
 
-        return response()->json(['view' => $view,'view1' => $view1]);
+        
+        return view('/chart', compact('sources','sub_sources','orders','subSources','category','category1','result','startDate','endDate','currentYearData','previousYearData','previousYearData','weekLabels','monthLabels','type','diff','range','source','sub_source'));
+        //
     }
 }

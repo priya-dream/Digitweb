@@ -8,7 +8,7 @@
     <body>
         <h2>Categories Performance</h2></br>
         <table class="table table-striped" style="margin-left:30px">
-        
+    <thead>
             <tr>
                 <th scope="col">Category Name</th>
                 <th scope="col">No of Products</th>
@@ -17,19 +17,32 @@
                 <th scope="col">Unitsold</th>
                 <th scope="col">Unitsold Trend</th>
             </tr> 
-            @foreach($result as $res)
-                <tr>
-                    <td>{{$res->category_name}} </td>
-                    <td>{{$res->no_of_products}}</td>
-                    <td>{{$res->revenue}}</td>
-                    <td>{{$res->revenue_trend_percentage}} </td>
-                    <td>{{$res->qty}}</td>
-                    <td>{{$res->qty_trend_percentage}} </td>
-                </tr>
-            @endforeach
-        
-        
-            
-        </table>
+    </thead>
+    <tbody>
+    @foreach($result1 as $productType => $groupedData)
+    <tr>
+        <td>{{ $productType }}</td>
+        {{-- Iterate through each HostingerProduct instance within the group --}}
+        @foreach($groupedData as $product)
+            <td>{{ $product->orderItemInfo->sum('qty') }}</td>
+            <td>{{ $product->orderItemInfo->sum('revenue') }}</td>
+            <td>{{ $product->orderItemInfo->sum('no_of_products') }}</td>
+        @endforeach
+    </tr>
+@endforeach
+        <!-- @foreach ($result1 as $productType => $groupedItems)
+            <tr>
+                <td>{{ $productType }}</td>
+                <td>{{ $groupedItems->sum('no_of_products') }}</td>
+                <td>{{ $groupedItems->sum('revenue') }}</td>
+                <td></td>
+                <td>{{ $groupedItems->sum('orderItemInfo.qty') }}</td>
+                <td></td>
+            </tr>
+        @endforeach -->
+    </tbody>
+</table>
+
+
     </body>
 </html>                       

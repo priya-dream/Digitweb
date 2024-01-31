@@ -44,7 +44,7 @@
                     </div> -->
 
                     <!-- Content Row -->
-                    <h2>Active Date Range: 23 December 2023 - 21 January 2024</h2></br>
+                    <h2>Active Date Range: 23 December 2023 - 21 January 2024</h2>
                     <h5>Date range and Grouping</h5>
                     <div class="row">
                         <form action="{{ route('formResult') }}" id="myForm" method = "get" class="form-control">
@@ -53,7 +53,7 @@
                                 <div class="col">
                                         <label for="dateRange" class="form-label" >Date range</label>
                                         <select class="form-control" name="range">
-                                                <option selected disabled>{{ $range }}</option>
+                                                <option selected>{{ $range }}</option>
                                                 <option selected>Select range</option>
                                                 <option>Last 30 days</option>
                                                 <option >Last 15 days</option>
@@ -71,8 +71,8 @@
                                     <div class="col">
                                         <label for="dateRange" class="form-label">Group by data</label>
                                         <select class="form-control" name="type">
-                                                <option selected disabled >{{ $type }}</option>
-                                                <option>Day</option>
+                                                <option selected >{{ $type }}</option>
+                                                <option selected>Day</option>
                                                 <option >Week</option>
                                                 <option >Month</option>
 
@@ -122,93 +122,7 @@
                         
                     </div></br></br>
 
-                        <div style="margin-left:40px">
-                            @include('test1');
-                        </div></br>
-                    
-                    <!-- <div id="result" style="margin-left:20px"></div>
-
-                    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-                    
-                    <script>
-                            function submitForm() {
-                                
-                                $.ajax({
-                                    url: '{{ route("formResult") }}',
-                                    type: 'POST',
-                                    data: $('#myForm').serialize(),
-                                    success: function(response) {
-                                        
-                                        $('#result').html(response.view);
-                                        $('#result1').html(response.view1);
-
-                                            if (!chartInitialized) {
-                                                console.log('New Chart Data:', response.newChartData);
-                                                initializeChart();
-                                            } else {
-                                            
-
-                                            // Update the chart with new data
-                                            updateChart(response.newChartData);
-                                        }
-                        },
-                                    error: function(xhr) {
-                                        console.log(xhr.responseText);
-                                    }
-                                });
-                            }
-                    </script> -->
-
-                    <!-- Content Row -->
-
-                    <!-- <div style="margin-left:20px"><h3>Total Revenue</h3></div>
-                    <div style="margin-top:10px;margin-left:20px"><h1>9,925.35</h1></div> -->
-
-                    <!-- <div class="row"> -->
-
-
-                    <!-- <canvas id="salesLineChart"></canvas> -->
-                        <!-- Area Chart -->
-                        <!-- <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4"> -->
-                                <!-- Card Header - Dropdown -->
-                                <!-- <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div> -->
-                                <!-- </div> -->
-
-                               
-
-                                <!-- Card Body -->
-                                <!-- <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
-                                </div> </br></br> -->
-
-                                
-                            <!-- </div>
-
-                    <div> -->
-                        <!-- @yield('content') -->
-                        
-                    <!-- </div> -->
-                           
-                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
                         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
@@ -265,49 +179,5 @@
 
 {{-- source subSource end--}}
 
-
-<!-- js for chart -->
-<!-- <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const orders = {!! json_encode($orders) !!};
-
-    const dates = order.map(order => order.order_date);
-    const amounts = orders.map(sale => order.order_total);
-
-    const ctx = document.getElementById('salesLineChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: [{
-                label: ' Chart',
-                borderColor: 'rgb(75, 192, 192)',
-                data: amounts,
-                fill: false,
-            }],
-        },
-    });
-});
-</script> -->
-<!-- js for chart -->
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-pie-demo.js"></script>
-
 </body>
-
 </html>

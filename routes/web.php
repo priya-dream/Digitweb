@@ -6,6 +6,7 @@ use App\Http\Controllers\LineChartController;
 use App\Http\Controllers\ChartJSController;
 use App\Http\Controllers\MainDataController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\PdfController;
 
 
 /*
@@ -24,7 +25,7 @@ Route::get('/', function () {
 });
 
 Route::get('/chart',[ChartController::class,'index']);
-Route::post('/formResult',[ChartController::class,'formResult'])->name('formResult');
+Route::get('/formResult',[ChartController::class,'formResult'])->name('formResult');
 Route::get('/report',[ReportController::class,'index']);
 
 //Route::get('/test',[ChartController::class,'test']);
@@ -38,3 +39,9 @@ Route::get('/create-form', [MainDataController::class,'create']);
 Route::get('/get-districts/{sourceId}', [MainDataController::class,'getDistricts']);
 
 Route::get('/get-sub-sources/{source}', [App\Http\Controllers\ChartController::class, 'getSubSources'])->name('get-sub-sources');
+
+
+Route::get('/upload', [PdfController::class, 'showForm']);
+Route::post('/upload', [PdfController::class, 'upload'])->name('upload');
+Route::post('/check-string-in-pdf', [PdfController::class, 'checkStringInPdf'])->name('checkStringInPdf');
+Route::get('/check_address_in_pdf', [PdfController::class, 'checkAddressInPdf']);
