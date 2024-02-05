@@ -19,28 +19,15 @@
             </tr> 
     </thead>
     <tbody>
-    @foreach($result1 as $productType => $groupedData)
-    <tr>
-        <td>{{ $productType }}</td>
-        {{-- Iterate through each HostingerProduct instance within the group --}}
-        @foreach($groupedData as $product)
-            <td>{{ $product->orderItemInfo->sum('qty') }}</td>
-            <td>{{ $product->orderItemInfo->sum('revenue') }}</td>
-            <td>{{ $product->orderItemInfo->sum('no_of_products') }}</td>
-        @endforeach
-    </tr>
+    @foreach ($result as $item)
+    <h2>Category: {{ $item->category_name }}</h2>
+    <ul>
+        <li>Total Order ID: {{ $item->no_of_products }}</li>
+        <li>Total Quantity: {{ $item->qty }}</li>
+        <li>Total Revenue: {{ $item->revenue }}</li>
+        <!-- Add other fields as needed -->
+    </ul>
 @endforeach
-        <!-- @foreach ($result1 as $productType => $groupedItems)
-            <tr>
-                <td>{{ $productType }}</td>
-                <td>{{ $groupedItems->sum('no_of_products') }}</td>
-                <td>{{ $groupedItems->sum('revenue') }}</td>
-                <td></td>
-                <td>{{ $groupedItems->sum('orderItemInfo.qty') }}</td>
-                <td></td>
-            </tr>
-        @endforeach -->
-    </tbody>
 </table>
 
 

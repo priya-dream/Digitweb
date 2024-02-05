@@ -34,16 +34,21 @@ class OrderItemInfo extends Model
     ];
 
     // Define relationship with Order model
-    // public function order()
-    // {
-    //     return $this->belongsTo(Order::class, 'oii_order_id', 'order');
-    // }
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order', 'oii_order_id');
+    }
 
     // Define relationship with HostingerProduct model
     public function hostingerProduct()
     {
-        return $this->belongsTo(HostingerProduct::class, 'oii_item_sku', 'SKU');
+        return $this->belongsTo(HostingerProduct::class, 'SKU', 'oii_item_sku');
     }
+
+    public function hostingerProductWithSums()
+{
+    return $this->belongsTo(HostingerProduct::class, 'oii_item_sku', 'SKU');
+}
 
     public function orderFortests()
 {

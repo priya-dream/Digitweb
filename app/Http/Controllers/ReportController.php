@@ -13,32 +13,63 @@ class ReportController extends Controller
     
 
     public function index(){
-        $date_thir = Carbon::today()->subDays(30);
 
-        $source = 'AMAZON';
-        $getGroupedSku = OrderItemInfo::with(['orderFortests.subSourceForTest.sourceForTest', 'HostingerProductsForTest'])
-        ->selectraw('oii_order_id, oii_item_sku')
-        // ->whereHas('orderFortests', function ($query) use ($date_thir) {
-        //     $query->where('order_date', '>=', $date_thir);
-        // })
-        // ->whereHas('orderFortests.subSourceForTest.sourceForTest', function ($query) use ($source) {
-        //     $query->where('source.source_name', '=', $source);
-        // })
-        ->groupby('oii_item_sku')
-        ->limit(100)
-        ->get();
+        $result = OrderItemInfo::with('hostingerProductWithSums')
+    ->selectRaw('oii_item_sku, SUM(order_item_info.oii_order_id) as total_order_id, SUM(order_item_info.oii_item_quantity) as total_quantity, SUM(order_item_info.oii_item_price) as total_price')
+
+    ->limit(5)
+    ->get();
+
+    $results = $result->groupBy('hostingerProductWithSums.ProductType');
+        // dd($results);
+
+        // need to get sum(oii_order_id,oii_quanity,price) as per product type...here producttype in hostingerproducts table , order_id in order table , oii_order_id,oii_quantity,price in order_item_info table
+
+    //     $result = HostingerProduct::select('ProductType')
+    //     ->with([
+    //         'orderItemInfo' => function ($query) {
+    //             $query->select('oii_order_id','oii_item_quantity','oii_item_price')
+    //                 ->selectRaw('SUM(oii_order_id) as no_of_products, SUM(oii_item_quantity) as oii_item_quantity, SUM(oii_item_price) as revenue')
+    //                 ->groupBy('oii_item_sku');
+    //         }
+    //     ])
+    //     ->limit(20)
+    //     ->get();
     
-    $test = $getGroupedSku->groupBy('HostingerProductsForTest.ProductType');
+    // dd($result);
+
+        // dd($result->pluck('orderItemInfo.0.no_of_products'));
+
+    //     $date_thir = Carbon::today()->subDays(30);
+
+    //     $source = 'AMAZON';
+    //     $getGroupedSku = OrderItemInfo::with(['orderFortests.subSourceForTest.sourceForTest', 'HostingerProductsForTest'])
+    //     ->selectraw('oii_order_id, oii_item_sku')
+    //     // ->whereHas('orderFortests', function ($query) use ($date_thir) {
+    //     //     $query->where('order_date', '>=', $date_thir);
+    //     // })
+    //     // ->whereHas('orderFortests.subSourceForTest.sourceForTest', function ($query) use ($source) {
+    //     //     $query->where('source.source_name', '=', $source);
+    //     // })
+    //     ->groupby('oii_item_sku')
+    //     ->limit(20)
+    //     ->get();
+       
+    
+    // $result1 = $getGroupedSku->groupBy('HostingerProductsForTest.ProductType');
+    // // dd($test);
     
 
-dd($getGroupedSku);
+// dd($getGroupedSku);
 
 
 // $result = OrderItemInfo::with('hostingerProduct')
-//     ->selectR('oii_order_id', 'oii_item_quantity', 'oii_item_sku')
+//     ->select('hostinger_products.ProductType')
+//     ->selectraw('SUM(oii_order_id) as no_of_products, SUM(oii_item_quantity) as oii_item_quantity, SUM(oii_item_price) as revenue')
 //     ->limit(20)
 //     ->get();
-//             dd($result);
+    
+//           
 
 
         // DB::enableQueryLog();
@@ -56,6 +87,7 @@ dd($getGroupedSku);
         //     ->limit(50)
         //     ->get();
         //     $result1 = $result->groupBy('ProductType');
+            // dd($result1);
 
             // dd(DB::getQueryLog());
         
@@ -144,6 +176,6 @@ dd($getGroupedSku);
         //     dd($revenueTrend);
         // }
 
-             return view('report',compact('result1'));
+             return view('report',compact('results'));
     }
 }
