@@ -19,6 +19,12 @@ class HostingerProduct extends Model
         return $this->hasMany(OrderItemInfo::class, 'oii_item_sku', 'SKU');
     }
 
+    public function orderItemInfoSum()
+{
+    return $this->hasMany(OrderItemInfo::class, 'oii_item_sku', 'oii_item_sku')
+        ->selectRaw('oii_item_sku, SUM(oii_order_id) as total_order_id, SUM(oii_item_quantity) as total_quantity')
+        ->groupBy('ProductType');
+}
     public function scopeWithCustomCount($query)
     {
         return $query->withsum([

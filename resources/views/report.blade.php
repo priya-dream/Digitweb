@@ -19,16 +19,20 @@
             </tr> 
     </thead>
     <tbody>
-    @foreach ($result as $item)
-    <h2>Category: {{ $item->category_name }}</h2>
-    <ul>
-        <li>Total Order ID: {{ $item->no_of_products }}</li>
-        <li>Total Quantity: {{ $item->qty }}</li>
-        <li>Total Revenue: {{ $item->revenue }}</li>
-        <!-- Add other fields as needed -->
-    </ul>
-@endforeach
-</table>
+    @foreach ($data as $item)           
+        @foreach ($item['orderItemInfo'] as $orderItem)
+            <tr>
+                <td>{{ $item['ProductType'] }}</td> 
+                <td>{{ $orderItem['orderid'] }}</td>
+                <td>{{ $orderItem['total'] }}</td>
+                <td></td>
+                <td>{{ $orderItem['qty'] }}</td>
+                <td></td>
+            </tr>
+        @endforeach
+    @endforeach
+        </tbody>
+    </table>
 
 
     </body>

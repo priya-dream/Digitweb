@@ -13,15 +13,32 @@ class ReportController extends Controller
     
 
     public function index(){
-
-        $result = OrderItemInfo::with('hostingerProductWithSums')
-    ->selectRaw('oii_item_sku, SUM(order_item_info.oii_order_id) as total_order_id, SUM(order_item_info.oii_item_quantity) as total_quantity, SUM(order_item_info.oii_item_price) as total_price')
-
-    ->limit(5)
+       
+    $startDate=2024-01-01;
+    $endDate=2024-02-05;
+    DB::enableQueryLog();
+    $data = HostingerProduct::with(['orderItemInfo' => function ($query) {
+        $query->selectRaw('oii_item_sku, SUM(oii_item_quantity) as qty, COUNT(oii_order_id) as orderid, SUM(oii_item_price) as total')
+              ->groupBy('oii_item_sku');
+    }])
+    ->select('ProductType', 'SKU') // Adjust the columns accordingly
+    ->groupBy('ProductType')
     ->get();
 
-    $results = $result->groupBy('hostingerProductWithSums.ProductType');
-        // dd($results);
+    
+
+// dd($data);
+        // $hostingerProducts = OrderItemInfo::with('hostingerProductWithSums')->get();
+        // foreach ($hostingerProducts as $hostingerProduct) {
+        //     foreach ($hostingerProduct->hostingerProductWithSums as $productWithSums) {
+        //         $totalOrderId = $productWithSums->orderItemInfo_sum_oii_order_id;
+        //         $totalQuantity = $productWithSums->orderItemInfo_sum_oii_item_quantity;
+        //         $totalPrice = $productWithSums->orderItemInfo_sum_oii_item_price;
+        
+        //         // Use the sums as needed
+        //     }
+        // }
+        // dd($hostingerProducts);
 
         // need to get sum(oii_order_id,oii_quanity,price) as per product type...here producttype in hostingerproducts table , order_id in order table , oii_order_id,oii_quantity,price in order_item_info table
 
@@ -176,6 +193,6 @@ class ReportController extends Controller
         //     dd($revenueTrend);
         // }
 
-             return view('report',compact('results'));
+             return view('report',compact('data'));
     }
 }

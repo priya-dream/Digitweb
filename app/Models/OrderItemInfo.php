@@ -46,8 +46,18 @@ class OrderItemInfo extends Model
     }
 
     public function hostingerProductWithSums()
+    {
+        return $this->belongsTo(HostingerProduct::class, 'oii_item_sku', 'SKU')
+        ->select('ProductType')  // Select the columns you need for grouping
+        ->withSum('orderItemInfo', 'oii_order_id')
+        ->withSum('orderItemInfo', 'oii_item_quantity')
+        ->withSum('orderItemInfo', 'oii_item_price')
+        ->groupBy('ProductType');
+    }
+
+    public function orderItemInfoSum()
 {
-    return $this->belongsTo(HostingerProduct::class, 'oii_item_sku', 'SKU');
+    return $this->hasMany(OrderItemInfo::class, 'oii_item_sku', 'SKU');
 }
 
     public function orderFortests()
