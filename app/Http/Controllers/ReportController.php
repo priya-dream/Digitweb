@@ -14,8 +14,8 @@ class ReportController extends Controller
 
     public function index(){
        
-    $startDate=2024-01-01;
-    $endDate=2024-02-05;
+    // $startDate=2024-01-01;
+    // $endDate=2024-02-05;
     DB::enableQueryLog();
     $data = HostingerProduct::with(['orderItemInfo' => function ($query) {
         $query->selectRaw('oii_item_sku, SUM(oii_item_quantity) as qty, COUNT(oii_order_id) as orderid, SUM(oii_item_price) as total')
